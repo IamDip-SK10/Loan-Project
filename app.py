@@ -266,4 +266,4 @@ st.markdown('</div>', unsafe_allow_html=True)
 # FOOTER (ENTERPRISE STYLE)
 # ---------------------------
 st.markdown("---")
-st.caption("© 2026 | Developed by Subhadip | AI Loan Decision & Credit Risk Platform")
+st.caption("© 2026 | AI Loan Decision & Credit Risk Platform | Developed by Subhadip")
