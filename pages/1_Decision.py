@@ -169,6 +169,7 @@ st.markdown('<div class="glass">', unsafe_allow_html=True)
 
 st.subheader("📊 Loan Calculation")
 
+# Initialize only once
 if "years_input" not in st.session_state:
     st.session_state["years_input"] = st.session_state["form_data"].get("years", 5)
 
@@ -200,10 +201,6 @@ interest_rate = st.number_input(
 # Save values
 st.session_state["form_data"]["years"] = tenure_years
 st.session_state["form_data"]["interest"] = interest_rate
-
-# Persist values
-st.session_state["interest_input"] = interest_rate
-st.session_state["years_input"] = tenure_years
 
 emi = None
 dti = None
