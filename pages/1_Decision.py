@@ -169,11 +169,17 @@ st.markdown('<div class="glass">', unsafe_allow_html=True)
 
 st.subheader("📊 Loan Calculation")
 
+if "interest_input" not in st.session_state:
+    st.session_state["interest_input"] = None
+
+if "years_input" not in st.session_state:
+    st.session_state["years_input"] = st.session_state["form_data"].get("years", 5)
+
+
 tenure_years = st.slider(
     "Loan Tenure (Years)",
     1,
     30,
-    st.session_state["form_data"].get("years", 5),
     key="years_input"
 )
 
@@ -182,22 +188,21 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-interest_default = st.session_state["form_data"].get("interest")
-
 interest_rate = st.number_input(
     "Interest Rate (%)",
     min_value=0.0,
-    value=interest_default if interest_default is not None else None,
+    value=st.session_state["interest_input"],
     step=0.01,
     placeholder="Enter The Interest Rate",
-    key="interest_input"
+    key="interest_widget"
 )
 
 # Save values
 st.session_state["form_data"]["years"] = tenure_years
+st.session_state["form_data"]["interest"] = interest_rate
 
-if interest_rate is not None:
-    st.session_state["form_data"]["interest"] = interest_rate
+# Persist interest field
+st.session_state["interest_input"] = interest_rate
 emi = None
 dti = None
 monthly_income = None
