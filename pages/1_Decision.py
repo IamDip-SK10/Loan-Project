@@ -202,6 +202,9 @@ interest_rate = st.number_input(
 st.session_state["form_data"]["years"] = tenure_years
 st.session_state["form_data"]["interest"] = interest_rate
 
+# Persist interest field
+st.session_state["interest_input"] = interest_rate
+
 emi = None
 dti = None
 monthly_income = None
