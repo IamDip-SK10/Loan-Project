@@ -170,26 +170,34 @@ st.markdown('<div class="glass">', unsafe_allow_html=True)
 st.subheader("📊 Loan Calculation")
 
 tenure_years = st.slider(
-    "Loan Tenure (Years)", 1, 30,
-    st.session_state["form_data"].get("years",5),
+    "Loan Tenure (Years)",
+    1,
+    30,
+    st.session_state["form_data"].get("years", 5),
     key="years_input"
 )
+
 st.markdown(
     "<p style='margin-top:-10px; font-size:13px; color:gray;'>(Slide to adjust your loan repayment period)</p>",
     unsafe_allow_html=True
 )
+
+interest_default = st.session_state["form_data"].get("interest")
+
 interest_rate = st.number_input(
     "Interest Rate (%)",
     min_value=0.0,
-    value = None,
+    value=interest_default if interest_default is not None else None,
     step=0.01,
     placeholder="Enter The Interest Rate",
     key="interest_input"
 )
-if interest_rate is not None:
-    st.session_state["form_data"].get("interest", 10.0)
+
+# Save values
 st.session_state["form_data"]["years"] = tenure_years
-st.session_state["form_data"]["interest"] = interest_rate
+
+if interest_rate is not None:
+    st.session_state["form_data"]["interest"] = interest_rate
 emi = None
 dti = None
 monthly_income = None
