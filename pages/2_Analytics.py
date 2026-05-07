@@ -107,7 +107,7 @@ with colG1:
         f"{dti:.2f}",
         ha='center',
         va='center',
-        color='white',
+        color='black',
         fontsize=12,
         fontweight='bold'
     )
@@ -134,7 +134,7 @@ with colG2:
         f"{prob * 100:.1f}%",
         ha='center',
         va='center',
-        color='white',
+        color='black',
         fontsize=12,
         fontweight='bold'
     )
@@ -165,7 +165,7 @@ with colG3:
         f"{ltv:.2f}",
         ha='center',
         va='center',
-        color='white',
+        color='black',
         fontsize=12,
         fontweight='bold'
     )
