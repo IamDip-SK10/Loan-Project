@@ -212,7 +212,11 @@ dti = None
 monthly_income = None
 ltv = None
 
-if loan_amount and interest_rate and loan_amount > 0 and interest_rate > 0:
+if (
+    loan_amount and loan_amount > 0
+    and interest_rate and interest_rate > 0
+    and tenure_years and tenure_years > 0
+):
 
     interest_rate = interest_rate / 100
     monthly_rate = interest_rate / 12
