@@ -34,8 +34,8 @@ if "form_data" not in st.session_state:
             "loan": 0.0,
             "asset": 0.0,
             "credit": 0,
-            "interest": 0.0,
-            "years": 5
+            "interest": None,
+            "years": None
         }
 # ---------------------------
 # LOAD MODEL
