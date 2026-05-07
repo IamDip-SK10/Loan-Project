@@ -284,7 +284,9 @@ if st.session_state.get("predicted"):
         "income": annual_income,
         "loan": loan_amount,
         "asset": asset_value,
-        "credit": credit_score
+        "credit": credit_score,
+        "interest": interest_rate,
+        "years": tenure_years
     }
     model_income = annual_income if annual_income and annual_income > 0 else 1
 
