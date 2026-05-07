@@ -174,14 +174,13 @@ if "interest_input" not in st.session_state:
     st.session_state["interest_input"] = None
 
 if "years_input" not in st.session_state:
-    st.session_state["years_input"] = None
-
+    st.session_state["years_input"] = st.session_state["form_data"].get("years")
 
 tenure_years = st.number_input(
     "Loan Tenure (Years)",
     min_value=1,
     max_value=30,
-    value=None,
+    value=st.session_state["years_input"],
     step=1,
     placeholder="Enter Loan Tenure",
     key="years_input"
