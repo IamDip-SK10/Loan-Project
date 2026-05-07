@@ -174,7 +174,7 @@ if "interest_input" not in st.session_state:
     st.session_state["interest_input"] = None
 
 if "years_input" not in st.session_state:
-    st.session_state["years_input"] = st.session_state["form_data"].get("years", 5)
+    st.session_state["years_input"] = None
 
 
 tenure_years = st.number_input(
