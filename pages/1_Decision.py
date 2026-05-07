@@ -177,13 +177,15 @@ if "years_input" not in st.session_state:
     st.session_state["years_input"] = st.session_state["form_data"].get("years", 5)
 
 
-tenure_years = st.slider(
+tenure_years = st.number_input(
     "Loan Tenure (Years)",
-    1,
-    30,
+    min_value=1,
+    max_value=30,
+    value=None,
+    step=1,
+    placeholder="Enter Loan Tenure",
     key="years_input"
 )
-
 st.markdown(
     "<p style='margin-top:-10px; font-size:13px; color:gray;'>(Slide to adjust your loan repayment period)</p>",
     unsafe_allow_html=True
@@ -265,6 +267,9 @@ if st.session_state.get("predicted"):
 
         if interest_rate is None:
             errors.append("Enter interest rate")
+            
+        if tenure_years is None:
+            errors.append("Enter loan tenure")
 
         if errors:
             error_box.error("⚠ " + " | ".join(errors))
