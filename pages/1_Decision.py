@@ -414,7 +414,7 @@ with col_exp2:
     # ---------------------------
     # 🔮 WHAT-IF SIMULATION
     # ---------------------------
-    if final_decision == 0 and dti is not None:
+    if st.session_state.get("predicted") and final_decision == 0 and dti is not None:
 
         st.markdown("## 🔮 Improve Your Approval Chances")
 
