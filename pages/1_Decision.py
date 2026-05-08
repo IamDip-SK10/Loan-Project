@@ -242,24 +242,19 @@ else:
     st.warning("Enter loan & interest to calculate EMI")
 
 st.markdown('</div>', unsafe_allow_html=True)
-
 # ---------------------------
 # PREDICTION
 # ---------------------------
 st.markdown('<div class="glass">', unsafe_allow_html=True)
 
- 
-
-    st.session_state["form_data"] = {
-        "age": age,
-        "income": annual_income,
-        "loan": loan_amount,
-        "asset": asset_value,
-    if st.button("🏦 Generate Decision"):
+if st.button("🏦 Generate Decision"):
     st.session_state["predicted"] = True
 
-if st.session_state.get("predicted") and credit_score is not None:
+if st.session_state.get("predicted"):
 
+    # ---------------------------
+    # VALIDATION
+    # ---------------------------
     errors = []
 
     if age is None or age <= 0:
@@ -282,10 +277,24 @@ if st.session_state.get("predicted") and credit_score is not None:
 
     if errors:
         error_box.error("⚠ " + " | ".join(errors))
-        st.stop()    "credit": credit_score,
+        st.stop()
+
+    # ---------------------------
+    # SAVE FORM STATE
+    # ---------------------------
+    st.session_state["form_data"] = {
+        "age": age,
+        "income": annual_income,
+        "loan": loan_amount,
+        "asset": asset_value,
+        "credit": credit_score,
         "interest": interest_rate,
         "years": tenure_years
     }
+
+    # ---------------------------
+    # MODEL INPUT
+    # ---------------------------
     model_income = annual_income if annual_income and annual_income > 0 else 1
 
     data = pd.DataFrame(
@@ -302,29 +311,68 @@ if st.session_state.get("predicted") and credit_score is not None:
     # BANK LOGIC
     # ---------------------------
     if loan_type == "Education":
+
         if credit_score < 500:
             final_decision = 0
+
     else:
+
         if credit_score < 550:
             final_decision = 0
+
         elif dti is not None and dti > 0.75:
             final_decision = 0
+
         elif employment == "Unemployed" and dti is not None and dti > 0.60:
             final_decision = 0
+
         elif credit_score < 650 and dti is not None and dti > 0.60:
             final_decision = 0
 
-    # 🔥 COLLATERAL OVERRIDE
+    # ---------------------------
+    # COLLATERAL OVERRIDE
+    # ---------------------------
     if ltv is not None:
+
         if ltv <= 0.70 and credit_score >= 600:
             final_decision = 1
             st.success("🏦 Approved based on strong collateral (Low LTV)")
 
-    # 🔥 AI vs POLICY
-    if pred == 1 and final_decision == 0:
-        st.warning("⚠ AI suggested approval, but bank policy rejected this application")
+    # ---------------------------
+    # GOVERNANCE CHECK
+    # ---------------------------
+    st.markdown("## 🛡️ Risk Governance Check")
 
-    # SAVE STATE
+    gov1, gov2 = st.columns(2)
+
+    with gov1:
+
+        st.markdown("### 🤖 AI Model")
+
+        if pred == 1:
+            st.success("Approval Recommended")
+
+        else:
+            st.error("Rejection Recommended")
+
+    with gov2:
+
+        st.markdown("### 🏦 Bank Policy")
+
+        if final_decision == 1:
+            st.success("Policy Compliant")
+
+        else:
+            st.error("Policy Restriction Found")
+
+    if pred == 1 and final_decision == 0:
+        st.warning(
+            "⚠ AI suggested approval, but institutional risk policy rejected this application."
+        )
+
+    # ---------------------------
+    # SAVE RESULT
+    # ---------------------------
     st.session_state["loan_result"] = {
         "income": annual_income,
         "loan": loan_amount,
@@ -343,83 +391,80 @@ if st.session_state.get("predicted") and credit_score is not None:
     st.markdown("## 📊 Decision Result")
 
     if final_decision == 1:
+
         st.success("✅ Loan Approved")
+
     else:
+
         st.warning("❌ Loan Not Approved")
-        st.info("Decision based on financial risk and bank policy")
+
+        st.info(
+            "Decision based on financial risk and institutional policy."
+        )
 
     st.metric("Confidence", f"{prob * 100:.2f}%")
-    # ---------------------------
-# 🔍 AI DECISION BREAKDOWN
-# ---------------------------
-st.markdown("## 🔍 AI Decision Breakdown")
-
-# Explainability Scores
-
-safe_credit = credit_score if credit_score is not None else 300
-safe_dti = dti if dti is not None else 1
-safe_ltv = ltv if ltv is not None else 1
-
-impacts = {
-
-    "Credit History":
-        ((safe_credit - 300) / 600) * 40,
-
-    "Debt Burden":
-        (1 - min(safe_dti, 1)) * 30,
-
-    "Collateral Strength":
-        (1 - min(safe_ltv, 1)) * 20,
-
-    "Income Stability":
-        10 if employment != "Unemployed" else 2
-}
-
-# Convert to DataFrame
-impact_df = pd.DataFrame(
-    list(impacts.items()),
-    columns=["Factor", "Influence Score"]
-)
-
-# Layout
-col_exp1, col_exp2 = st.columns([2, 1])
-
-# ---------------------------
-# BAR CHART
-# ---------------------------
-with col_exp1:
-
-    st.bar_chart(
-        impact_df.set_index("Factor"),
-        color="#3498db"
-    )
-
-# ---------------------------
-# TOP DRIVER
-# ---------------------------
-with col_exp2:
-
-    st.markdown("### 🧠 Top Driver")
-
-    top_factor = max(
-        impacts,
-        key=impacts.get
-    )
-
-    st.success(
-        f"{top_factor} had the strongest positive influence on this application."
-    )
 
     # ---------------------------
-    # 🔮 WHAT-IF SIMULATION
+    # AI DECISION BREAKDOWN
     # ---------------------------
-    if st.session_state.get("predicted") and final_decision == 0 and dti is not None:
+    st.markdown("## 🔍 AI Decision Breakdown")
+
+    safe_credit = credit_score if credit_score is not None else 300
+    safe_dti = dti if dti is not None else 1
+    safe_ltv = ltv if ltv is not None else 1
+
+    impacts = {
+
+        "Credit History":
+            ((safe_credit - 300) / 600) * 40,
+
+        "Debt Burden":
+            (1 - min(safe_dti, 1)) * 30,
+
+        "Collateral Strength":
+            (1 - min(safe_ltv, 1)) * 20,
+
+        "Income Stability":
+            10 if employment != "Unemployed" else 2
+    }
+
+    impact_df = pd.DataFrame(
+        list(impacts.items()),
+        columns=["Factor", "Influence Score"]
+    )
+
+    col_exp1, col_exp2 = st.columns([2, 1])
+
+    with col_exp1:
+
+        st.bar_chart(
+            impact_df.set_index("Factor")
+        )
+
+    with col_exp2:
+
+        st.markdown("### 🧠 Top Driver")
+
+        top_factor = max(
+            impacts,
+            key=impacts.get
+        )
+
+        st.success(
+            f"{top_factor} had the strongest positive influence on this application."
+        )
+
+    # ---------------------------
+    # WHAT-IF SIMULATION
+    # ---------------------------
+    if final_decision == 0 and dti is not None:
 
         st.markdown("## 🔮 Improve Your Approval Chances")
 
         colA, colB = st.columns(2)
 
         with colA:
+
             new_income = st.slider(
                 "Increase Income (₹)",
                 int(annual_income or 0),
@@ -428,6 +473,7 @@ with col_exp2:
             )
 
         with colB:
+
             new_loan = st.slider(
                 "Reduce Loan Amount (₹)",
                 10000,
@@ -435,93 +481,195 @@ with col_exp2:
                 int(loan_amount)
             )
 
-        # Recalculate
         if new_income > 0:
+
             new_monthly_income = new_income / 12
-            new_emi = (new_loan * monthly_rate * (1 + monthly_rate) ** months) / (
-                    (1 + monthly_rate) ** months - 1
+
+            new_emi = (
+                new_loan * monthly_rate * (1 + monthly_rate) ** months
+            ) / (
+                (1 + monthly_rate) ** months - 1
             )
-            # same EMI assumption
+
             new_dti = new_emi / new_monthly_income
 
             st.info(f"New DTI: {new_dti:.2f}")
 
             if new_dti < 0.5:
-                st.success("✅ This scenario is likely to be approved")
+
+                st.success(
+                    "✅ This scenario is likely to be approved"
+                )
+
             else:
-                st.warning("⚠ Still risky — reduce loan more or increase income")
+
+                st.warning(
+                    "⚠ Still risky — reduce loan more or increase income"
+                )
 
     # ---------------------------
-    # RISK
+    # RISK ANALYSIS
     # ---------------------------
     st.markdown("## ⚠️ Risk Analysis")
 
     if dti is not None:
+
         risk_color = get_dti_color(dti)
 
         if risk_color == "green":
-            st.success("🟢 Low Risk (Healthy Debt Level)")
+
+            st.success(
+                "🟢 Low Risk (Healthy Debt Level)"
+            )
+
         elif risk_color == "orange":
-            st.warning("🟠 Moderate Risk (Monitor Debt)")
+
+            st.warning(
+                "🟠 Moderate Risk (Monitor Debt)"
+            )
+
         else:
-            st.error("🔴 High Risk (Debt Too High)")
+
+            st.error(
+                "🔴 High Risk (Debt Too High)"
+            )
 
     # ---------------------------
-    # CREDIT
+    # CREDIT ANALYSIS
     # ---------------------------
     if credit_score > 750:
+
         st.success("💳 Excellent Credit")
+
     elif credit_score > 650:
+
         st.info("💳 Good Credit")
+
     else:
+
         st.warning("💳 Weak Credit")
 
     # ---------------------------
     # EDUCATION LOAN
     # ---------------------------
     if loan_type == "Education":
+
         st.markdown("## 🎓 Education Loan Insights")
+
         if annual_income == 0:
             st.info("📘 No income? Normal for students")
+
         if credit_score < 600:
-            st.warning("Add co-applicant to improve approval")
+            st.warning(
+                "Add co-applicant to improve approval"
+            )
+
         if loan_amount > 2000000:
-            st.warning("High loan → collateral may be required")
-        st.success("Banks evaluate future earning potential")
+            st.warning(
+                "High loan → collateral may be required"
+            )
+
+        st.success(
+            "Banks evaluate future earning potential"
+        )
 
     # ---------------------------
-    # RECOMMENDATIONS
+    # STRATEGIC RECOMMENDATIONS
     # ---------------------------
-    st.markdown("## 🤖 Recommendations")
+    st.markdown("## 🤖 Strategic Decision Insights")
 
-    if credit_score < 650:
-        st.warning("Improve credit score")
+    positives = []
+    risks = []
 
-    if dti is not None and dti > 0.5:
-        st.warning("Reduce loan or increase income")
+    # POSITIVES
+    if credit_score > 750:
+        positives.append(
+            "Prime Credit Tier: Reduces lending risk exposure."
+        )
+
+    if dti is not None and dti < 0.3:
+        positives.append(
+            "Strong Liquidity: Healthy repayment capacity detected."
+        )
+
+    if loan_type == "Education":
+        positives.append(
+            "Future Value Potential identified for education financing."
+        )
+
+    if ltv is not None and ltv <= 0.7:
+        positives.append(
+            "Strong collateral coverage supports approval stability."
+        )
+
+    # RISKS
+    if annual_income and loan_amount > annual_income * 1.5:
+        risks.append(
+            "Capital Overextension: Loan exceeds safe income multiplier."
+        )
 
     if employment == "Unemployed" and loan_type != "Education":
-        st.warning("Stable job helps approval")
+        risks.append(
+            "Cash Flow Volatility: Stable income source not detected."
+        )
 
-    if annual_income and loan_amount > annual_income * 0.8:
-        st.warning("Loan too high vs income")
+    if dti is not None and dti > 0.5:
+        risks.append(
+            "High Debt Burden may impact repayment reliability."
+        )
 
-    if dti is not None and dti < 0.3 and credit_score > 700:
-        st.success("Excellent profile")
+    # DISPLAY
+    pos_col, risk_col = st.columns(2)
+
+    with pos_col:
+
+        st.markdown("### ✅ Strengths")
+
+        if positives:
+
+            for p in positives:
+                st.success(p)
+
+        else:
+            st.info("No major positive drivers detected.")
+
+    with risk_col:
+
+        st.markdown("### ⚠️ Mitigation Needed")
+
+        if risks:
+
+            for r in risks:
+                st.warning(r)
+
+        else:
+            st.success("No major institutional risks detected.")
 
     # ---------------------------
     # ELIGIBILITY
     # ---------------------------
     if monthly_income:
+
         max_emi = monthly_income * 0.5
-        estimated_loan = (max_emi * ((1 + monthly_rate) ** months - 1)) / (
+
+        estimated_loan = (
+            max_emi * ((1 + monthly_rate) ** months - 1)
+        ) / (
             monthly_rate * (1 + monthly_rate) ** months
         )
+
         st.session_state["form_data"]["safe_loan"] = estimated_loan
-        st.success(f"💰 Recommended Safe Loan Limit: ₹{format_inr(estimated_loan)}")
+
+        st.success(
+            f"💰 Recommended Safe Loan Limit: ₹{format_inr(estimated_loan)}"
+        )
 
     st.markdown("---")
-    st.page_link("pages/2_Analytics.py", label="➡ View Analytics")
+
+    st.page_link(
+        "pages/2_Analytics.py",
+        label="➡ View Analytics"
+    )
 
 st.markdown('</div>', unsafe_allow_html=True)
 
