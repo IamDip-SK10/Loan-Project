@@ -350,6 +350,59 @@ if st.session_state.get("predicted"):
         st.info("Decision based on financial risk and bank policy")
 
     st.metric("Confidence", f"{prob * 100:.2f}%")
+    # ---------------------------
+# 🔍 AI DECISION BREAKDOWN
+# ---------------------------
+st.markdown("## 🔍 AI Decision Breakdown")
+
+# Explainability Scores
+impacts = {
+    "Credit History": ((credit_score - 300) / 600) * 40,
+
+    "Debt Burden":
+        (1 - min(dti if dti else 1, 1)) * 30,
+
+    "Collateral Strength":
+        (1 - min(ltv if ltv else 1, 1)) * 20,
+
+    "Income Stability":
+        10 if employment != "Unemployed" else 2
+}
+
+# Convert to DataFrame
+impact_df = pd.DataFrame(
+    list(impacts.items()),
+    columns=["Factor", "Influence Score"]
+)
+
+# Layout
+col_exp1, col_exp2 = st.columns([2, 1])
+
+# ---------------------------
+# BAR CHART
+# ---------------------------
+with col_exp1:
+
+    st.bar_chart(
+        impact_df.set_index("Factor"),
+        color="#3498db"
+    )
+
+# ---------------------------
+# TOP DRIVER
+# ---------------------------
+with col_exp2:
+
+    st.markdown("### 🧠 Top Driver")
+
+    top_factor = max(
+        impacts,
+        key=impacts.get
+    )
+
+    st.success(
+        f"{top_factor} had the strongest positive influence on this application."
+    )
 
     # ---------------------------
     # 🔮 WHAT-IF SIMULATION
