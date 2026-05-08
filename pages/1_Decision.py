@@ -248,39 +248,41 @@ st.markdown('</div>', unsafe_allow_html=True)
 # ---------------------------
 st.markdown('<div class="glass">', unsafe_allow_html=True)
 
- if st.button("🏦 Generate Decision"):
-    st.session_state["predicted"] = True
- if st.session_state.get("predicted") and credit_score is not None:
-        errors = []
-
-        if age is None or age <= 0:
-            errors.append("Enter valid age")
-
-        if annual_income is None or annual_income <= 0:
-            errors.append("Enter valid annual income")
-
-        if loan_amount is None or loan_amount <= 0:
-            errors.append("Enter valid loan amount")
-
-        if credit_score is None:
-            errors.append("Enter credit score")
-
-        if interest_rate is None:
-            errors.append("Enter interest rate")
-            
-        if tenure_years is None:
-            errors.append("Enter loan tenure")
-
-        if errors:
-            error_box.error("⚠ " + " | ".join(errors))
-            st.stop()
+ 
 
     st.session_state["form_data"] = {
         "age": age,
         "income": annual_income,
         "loan": loan_amount,
         "asset": asset_value,
-        "credit": credit_score,
+    if st.button("🏦 Generate Decision"):
+    st.session_state["predicted"] = True
+
+if st.session_state.get("predicted") and credit_score is not None:
+
+    errors = []
+
+    if age is None or age <= 0:
+        errors.append("Enter valid age")
+
+    if annual_income is None or annual_income <= 0:
+        errors.append("Enter valid annual income")
+
+    if loan_amount is None or loan_amount <= 0:
+        errors.append("Enter valid loan amount")
+
+    if credit_score is None:
+        errors.append("Enter credit score")
+
+    if interest_rate is None:
+        errors.append("Enter interest rate")
+
+    if tenure_years is None:
+        errors.append("Enter loan tenure")
+
+    if errors:
+        error_box.error("⚠ " + " | ".join(errors))
+        st.stop()    "credit": credit_score,
         "interest": interest_rate,
         "years": tenure_years
     }
