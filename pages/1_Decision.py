@@ -356,14 +356,21 @@ if st.session_state.get("predicted"):
 st.markdown("## 🔍 AI Decision Breakdown")
 
 # Explainability Scores
+
+safe_credit = credit_score if credit_score is not None else 300
+safe_dti = dti if dti is not None else 1
+safe_ltv = ltv if ltv is not None else 1
+
 impacts = {
-    "Credit History": ((credit_score - 300) / 600) * 40,
+
+    "Credit History":
+        ((safe_credit - 300) / 600) * 40,
 
     "Debt Burden":
-        (1 - min(dti if dti else 1, 1)) * 30,
+        (1 - min(safe_dti, 1)) * 30,
 
     "Collateral Strength":
-        (1 - min(ltv if ltv else 1, 1)) * 20,
+        (1 - min(safe_ltv, 1)) * 20,
 
     "Income Stability":
         10 if employment != "Unemployed" else 2
