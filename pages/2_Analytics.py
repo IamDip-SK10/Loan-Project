@@ -336,32 +336,120 @@ with colR:
     st.pyplot(fig5, width="content")
 
 # ---------------------------
-# 🧠 UNDERWRITING EXPLANATION (UPGRADED)
+# 🧠 AI DECISION TRANSPARENCY
 # ---------------------------
 st.markdown('<div class="glass">', unsafe_allow_html=True)
 
-st.subheader("🔍 Decision Explanation")
+st.subheader("🧠 AI Decision Transparency")
 
-points = []
+# ---------------------------
+# CREDIT SCORE ANALYSIS
+# ---------------------------
+if data["credit_score"] > 750:
 
-if data["credit_score"] < 650:
-    points.append("Low credit score reduced approval chances")
-elif data["credit_score"] > 750:
-    points.append("Strong credit profile supports approval")
+    st.success(
+        "✅ Excellent credit history increased approval confidence"
+    )
 
-if data["dti"] > 0.6:
-    points.append("High debt-to-income ratio increased risk")
-elif data["dti"] < 0.3:
-    points.append("Low debt burden improved profile")
+elif data["credit_score"] >= 650:
 
-if data.get("ltv", 0) <= 0.7 and data["credit_score"] >= 600:
-    points.append("Approved based on strong collateral (low LTV)")
+    st.info(
+        "ℹ Good credit profile supported lending trust"
+    )
 
+else:
+
+    st.warning(
+        "⚠ Low credit score reduced approval strength"
+    )
+
+# ---------------------------
+# DTI ANALYSIS
+# ---------------------------
+if data["dti"] > 0.60:
+
+    st.warning(
+        "⚠ High debt-to-income ratio increased repayment risk"
+    )
+
+elif data["dti"] < 0.30:
+
+    st.success(
+        "✅ Low debt burden improved financial stability"
+    )
+
+else:
+
+    st.info(
+        "ℹ Moderate debt obligations detected"
+    )
+
+# ---------------------------
+# COLLATERAL / LTV ANALYSIS
+# ---------------------------
+if data.get("ltv", 0) > 0:
+
+    if data["ltv"] <= 0.70:
+
+        st.success(
+            "🏠 Strong collateral support reduced lending risk"
+        )
+
+    elif data["ltv"] <= 0.90:
+
+        st.info(
+            "ℹ Collateral coverage is acceptable"
+        )
+
+    else:
+
+        st.warning(
+            "⚠ High LTV increased collateral exposure"
+        )
+
+# ---------------------------
+# INCOME ANALYSIS
+# ---------------------------
 if data["income"] == 0:
-    points.append("No income — evaluated as student case")
 
-for p in points:
-    st.write("•", p)
+    st.info(
+        "📘 Student profile evaluated under education lending rules"
+    )
+
+elif data["income"] < 500000:
+
+    st.warning(
+        "⚠ Lower income profile may affect repayment capacity"
+    )
+
+else:
+
+    st.success(
+        "💰 Stable income profile strengthened affordability"
+    )
+
+# ---------------------------
+# CONFIDENCE SUMMARY
+# ---------------------------
+st.markdown("### 📊 Confidence Summary")
+
+if data["prob"] > 0.80:
+
+    st.success(
+        "🟢 High confidence lending profile"
+    )
+
+elif data["prob"] > 0.60:
+
+    st.info(
+        "🟡 Moderate approval confidence"
+    )
+
+else:
+
+    st.warning(
+        "🔴 Elevated lending uncertainty detected"
+    )
 
 st.markdown('</div>', unsafe_allow_html=True)
 
