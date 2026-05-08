@@ -438,7 +438,9 @@ if st.session_state.get("predicted"):
     with col_exp1:
 
         st.bar_chart(
-            impact_df.set_index("Factor")
+    impact_df.set_index("Factor"),
+    color="#3498db",
+    height=250
         )
 
     with col_exp2:
