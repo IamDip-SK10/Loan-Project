@@ -248,9 +248,9 @@ st.markdown('</div>', unsafe_allow_html=True)
 # ---------------------------
 st.markdown('<div class="glass">', unsafe_allow_html=True)
 
-if st.button("🏦 Generate Decision"):
+ if st.button("🏦 Generate Decision"):
     st.session_state["predicted"] = True
-if st.session_state.get("predicted") and credit_score is not None:
+ if st.session_state.get("predicted") and credit_score is not None:
         errors = []
 
         if age is None or age <= 0:
