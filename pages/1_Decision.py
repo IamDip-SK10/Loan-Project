@@ -433,7 +433,7 @@ if st.session_state.get("predicted"):
         columns=["Factor", "Influence Score"]
     )
 
-    col_exp1, col_exp2 = st.columns([2, 1])
+    col_exp1, col_exp2 = st.columns([1.7, 1])
 
     with col_exp1:
 
