@@ -6,7 +6,11 @@ from style import load_css
 # ---------------------------
 st.set_page_config(page_title="Loan AI System", layout="wide")
 load_css(st)
-
+# ---------------------------
+# SIDEBAR LOGO
+# ---------------------------
+st.sidebar.image("financelogo.png", width=220)
+st.sidebar.markdown("<br>", unsafe_allow_html=True)
 # ---------------------------
 # SIDEBAR NAV (UPDATED LABEL)
 # ---------------------------
@@ -54,25 +58,33 @@ colA, colB = st.columns(2)
 
 with colA:
     st.markdown("#### 🛡️ Risk Management")
+
     st.write("● **Probability Modeling:** AI-driven approval estimation")
     st.write("● **Policy Guardrails:** Credit Score, DTI & LTV enforcement")
     st.write("● **Compliance Logic:** Final decision governed by banking rules")
+    st.write("● **Risk Governance Engine:** AI + banking policy validation")
+    st.write("● **Risk Classification:** Low / Moderate / High Risk segmentation")
 
 with colB:
     st.markdown("#### 📈 Customer Advisory")
-    st.write("● **Scenario Analysis:** Dynamic 'What-If' simulations for eligibility optimization")
+
+    st.write("● **Scenario Analysis:** Dynamic 'What-If' simulations")
     st.write("● **Actionable Insights:** Understand rejection reasons")
     st.write("● **Optimization Engine:** Improve approval chances")
+    st.write("● **AI Transparency Layer:** Decision explanation & top drivers")
+    st.write("● **Executive PDF Reporting:** Enterprise-style governance reports")
 
 st.markdown("---")
 
 st.markdown("#### 🧭 Core System Workflow")
 
 st.markdown("""
-1. **[AI Prediction]** → Multi-factor approval probability  
-2. **[Policy Governance]** → Risk validation using financial rules  
-3. **[Advisory Engine]** → User guidance via simulation  
-4. **[Analytics]** → Visual risk & financial breakdown  
+1. **[AI Prediction Engine]** → Multi-factor approval probability  
+2. **[Risk Governance Layer]** → Credit Score, DTI & LTV validation  
+3. **[Decision Intelligence]** → AI transparency & decision breakdown  
+4. **[Financial Advisory Engine]** → Smart recommendations & simulations  
+5. **[Analytics Dashboard]** → Risk visualization & affordability analysis  
+6. **[Enterprise PDF Generator]** → Official governance & approval report  
 """)
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -169,6 +181,35 @@ Banks evaluate:
 
 st.markdown('</div>', unsafe_allow_html=True)
 
+# ---------------------------
+# 🔍 AI TRANSPARENCY
+# ---------------------------
+st.markdown('<div class="glass">', unsafe_allow_html=True)
+
+st.markdown("### 🔍 AI Transparency & Governance")
+
+st.write("""
+Modern banking systems require AI decisions to be explainable and auditable.
+
+This platform includes:
+""")
+
+st.success("""
+✔ AI Decision Breakdown  
+✔ Top Approval Drivers  
+✔ Risk Classification Engine  
+✔ Governance Validation Layer  
+✔ Financial Affordability Analysis  
+✔ Banking Policy Compliance Logic  
+✔ Decision Confidence Scoring  
+""")
+
+st.info("""
+💡 The system ensures that loan approvals are not purely AI-driven,  
+but validated using real-world banking governance principles.
+""")
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------------------------
 # 🏠 LTV & ASSET (NEW 🔥)
@@ -226,14 +267,28 @@ st.write("""
 
 #### 🔮 Step 3: Financial Advisory Engine
 ✔ What-If Simulation (Income vs Loan adjustment)  
+✔ Dynamic Eligibility Recalculation  
+✔ Real-Time Risk Adjustment  
+✔ AI-Based Loan Optimization Suggestions  
 ✔ Smart Recommendations to improve approval  
 ✔ Loan Eligibility Estimation  
 
 #### 📊 Step 4: Analytics Dashboard
 ✔ EMI vs Income Comparison  
-✔ Risk Visualization (DTI + LTV Gauges)  
-✔ Loan Burden Breakdown  
-✔ Decision Explanation Engine  
+✔ Loan Burden Distribution  
+✔ AI Decision Contribution Analysis  
+✔ Risk Visualization (DTI + LTV)  
+✔ Transparency & Confidence Insights  
+✔ Strategic Decision Recommendations  
+✔ Risk Governance Summary  
+
+#### 📄 Step 5: Enterprise PDF Reporting Included
+✔ Official Loan Evaluation Summary  
+✔ AI Governance Reports  
+✔ Risk Analysis Documentation  
+✔ Financial Snapshot Reports  
+✔ Decision Transparency Summaries  
+✔ Loan Affordability Analysis  
 
 ---
 
@@ -241,23 +296,18 @@ st.write("""
 Machine Learning + Financial Policy + User Advisory.
 """)
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 # ---------------------------
 # NAVIGATION BUTTONS (WITH TOOLTIPS)
 # ---------------------------
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns([1,2,1])
 
-with col1:
+with col2:
     st.page_link(
         "pages/1_Decision.py",
         label="➡ Decision Page",
         help="Start loan evaluation"
-    )
-
-with col2:
-    st.page_link(
-        "pages/2_Analytics.py",
-        label="➡ Analytics Page",
-        help="View financial insights"
     )
 
 st.markdown('</div>', unsafe_allow_html=True)
@@ -266,4 +316,4 @@ st.markdown('</div>', unsafe_allow_html=True)
 # FOOTER (ENTERPRISE STYLE)
 # ---------------------------
 st.markdown("---")
-st.caption("© 2026 | AI Loan Decision & Credit Risk Platform | Developed by Subhadip")
+st.caption("© 2026 FinWithDip | AI Loan Decision & Credit Risk Platform | Developed by Subhadip")

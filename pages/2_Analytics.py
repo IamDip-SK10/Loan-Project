@@ -25,6 +25,11 @@ def get_dti_color(dti):
     else:
         return "red"
 # ---------------------------
+# SIDEBAR LOGO
+# ---------------------------
+st.sidebar.image("financelogo.png", width=220)
+st.sidebar.markdown("<br>", unsafe_allow_html=True)
+# ---------------------------
 # SIDEBAR NAV (UPDATED LABEL)
 # ---------------------------
 st.sidebar.markdown("## 📍 System Menu")
@@ -107,7 +112,7 @@ with colG1:
         f"{dti:.2f}",
         ha='center',
         va='center',
-        color='white',
+        color='black',
         fontsize=12,
         fontweight='bold'
     )
@@ -134,7 +139,7 @@ with colG2:
         f"{prob * 100:.1f}%",
         ha='center',
         va='center',
-        color='white',
+        color='black',
         fontsize=12,
         fontweight='bold'
     )
@@ -165,7 +170,7 @@ with colG3:
         f"{ltv:.2f}",
         ha='center',
         va='center',
-        color='white',
+        color='black',
         fontsize=12,
         fontweight='bold'
     )
@@ -305,6 +310,7 @@ with colL:
     fig4.tight_layout()
 
     st.pyplot(fig4, width="content")
+    plt.savefig("emi_vs_income.png", bbox_inches="tight")
 
 
 # =========================
@@ -336,32 +342,121 @@ with colR:
     st.pyplot(fig5, width="content")
 
 # ---------------------------
-# 🧠 UNDERWRITING EXPLANATION (UPGRADED)
+# AI DECISION TRANSPARENCY
 # ---------------------------
 st.markdown('<div class="glass">', unsafe_allow_html=True)
 
-st.subheader("🔍 Decision Explanation")
+st.subheader("🔍 AI Decision Transparency")
 
-points = []
+# ---------------------------
+# CREDIT SCORE ANALYSIS
+# ---------------------------
+if data["credit_score"] > 750:
 
-if data["credit_score"] < 650:
-    points.append("Low credit score reduced approval chances")
-elif data["credit_score"] > 750:
-    points.append("Strong credit profile supports approval")
+    st.success(
+        "✅ Excellent credit history increased approval confidence"
+    )
 
-if data["dti"] > 0.6:
-    points.append("High debt-to-income ratio increased risk")
-elif data["dti"] < 0.3:
-    points.append("Low debt burden improved profile")
+elif data["credit_score"] >= 650:
 
-if data.get("ltv", 0) <= 0.7 and data["credit_score"] >= 600:
-    points.append("Approved based on strong collateral (low LTV)")
+    st.info(
+        "ℹ Good credit profile supported lending trust"
+    )
 
+else:
+
+    st.warning(
+        "⚠ Low credit score reduced approval strength"
+    )
+plt.savefig("loan_burden.png", bbox_inches="tight")
+
+# ---------------------------
+# DTI ANALYSIS
+# ---------------------------
+if data["dti"] > 0.60:
+
+    st.warning(
+        "⚠ High debt-to-income ratio increased repayment risk"
+    )
+
+elif data["dti"] < 0.30:
+
+    st.success(
+        "✅ Low debt burden improved financial stability"
+    )
+
+else:
+
+    st.info(
+        "ℹ Moderate debt obligations detected"
+    )
+
+# ---------------------------
+# COLLATERAL / LTV ANALYSIS
+# ---------------------------
+if data.get("ltv", 0) > 0:
+
+    if data["ltv"] <= 0.70:
+
+        st.success(
+            "🏠 Strong collateral support reduced lending risk"
+        )
+
+    elif data["ltv"] <= 0.90:
+
+        st.info(
+            "ℹ Collateral coverage is acceptable"
+        )
+
+    else:
+
+        st.warning(
+            "⚠ High LTV increased collateral exposure"
+        )
+
+# ---------------------------
+# INCOME ANALYSIS
+# ---------------------------
 if data["income"] == 0:
-    points.append("No income — evaluated as student case")
 
-for p in points:
-    st.write("•", p)
+    st.info(
+        "📘 Student profile evaluated under education lending rules"
+    )
+
+elif data["income"] < 500000:
+
+    st.warning(
+        "⚠ Lower income profile may affect repayment capacity"
+    )
+
+else:
+
+    st.success(
+        "💰 Stable income profile strengthened affordability"
+    )
+
+# ---------------------------
+# CONFIDENCE SUMMARY
+# ---------------------------
+st.markdown("### 📊 Confidence Summary")
+
+if data["prob"] > 0.80:
+
+    st.success(
+        "🟢 High confidence lending profile"
+    )
+
+elif data["prob"] > 0.60:
+
+    st.info(
+        "🟡 Moderate approval confidence"
+    )
+
+else:
+
+    st.warning(
+        "🔴 Elevated lending uncertainty detected"
+    )
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -376,9 +471,45 @@ else:
  st.warning("❌ Loan Not Approved")
 
 st.metric("Confidence", f"{data['prob']*100:.2f}%")
+# ---------------------------
+# 📄 EXPORT REPORT
+# ---------------------------
+st.markdown('<div class="glass">', unsafe_allow_html=True)
+
+st.subheader("📄 Export Credit Memo")
+
+st.info(
+    "Download a professional AI-generated underwriting report "
+    "with governance analysis, risk assessment, and decision transparency."
+)
+
+from pages.pdf_generator import generate_pdf
+
+if st.button("📥 Generate PDF Credit Memo"):
+
+    pdf_data = {
+        **st.session_state.get("form_data", {}),
+        **data
+    }
+
+    pdf_data["applicant_name"] = (
+        st.session_state.get(
+            "applicant_name",
+            "Unknown User"
+        )
+    )
+
+    pdf = generate_pdf(pdf_data)
+
+    st.download_button(
+        label="⬇ Download PDF Report",
+        data=pdf,
+        file_name="FinWithDip_Credit_Memo.pdf",
+        mime="application/pdf"
+    )
 
 # ---------------------------
 # FOOTER
 # ---------------------------
 st.markdown("---")
-st.caption("© 2026 | AI Loan Decision & Credit Risk Platform | Developed by Subhadip")
+st.caption("© 2026 FinWithDip | AI Loan Decision & Credit Risk Platform | Developed by Subhadip")
